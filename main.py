@@ -106,7 +106,7 @@ def main():
     for round_num in range(1, rounds+1):
         print(f"Round {round_num}/{rounds}:")
         print(f"---------")
-        score_pct = 0 if round_num == 1 else 100 * score / round_num
+        score_pct = 0 if round_num == 1 else 100 * score / (round_num - 1)
         print(f"Score: {score_pct:0.0f}%")
         print()
         score += play_round(mode)
@@ -118,6 +118,7 @@ def main():
     score_pct = 100 * score / round_num
     print(f"Final Score: {score_pct:0.0f}%")
     print()
+    input("Hit enter to exit")
 
 if __name__ == '__main__':
     main()

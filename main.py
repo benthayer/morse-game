@@ -60,6 +60,9 @@ def play_round(mode):
 
     return score
 
+cursor_up = '\x1b[1A'
+cursor_down = '\x1b[1B'
+clear_line = "\u001b[2K"
 
 def main():
     intro()
@@ -69,6 +72,12 @@ def main():
     print(f"Playing {rounds} rounds of {mode}")
     print()
 
+    # Give us extra space so all rounds align
+    for x in range(14):
+        print()
+    for x in range(14):
+        print(cursor_up, end="")
+
     score = 0
     for round_num in range(1, rounds+1):
         print(f"Round {round_num}/{rounds}:")
@@ -77,7 +86,11 @@ def main():
         print(f"Score: {score_pct:0.0f}%")
         print()
         score += play_round(mode)
-        print()
+        input("Hit enter to play next round")
+
+        for x in range(14):
+            print(cursor_up, end="")
+            print(clear_line, end="")
 
     score_pct = 100 * score / round_num
     print(f"Final Score: {score_pct:0.0f}%")

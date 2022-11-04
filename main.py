@@ -1,3 +1,6 @@
+import sys
+
+import control
 import modes
 import sentences
 import helpers
@@ -48,8 +51,19 @@ def play_round(mode):
     helpers.play_sample(sample, sleep=True)
     print()
 
-    print("Type solution. If you don't know a word, type ? instead of the word")
-    guess = input("Your guess: ")
+    print("Type word below. To hear again, press r. If you don't know, type ?")
+    print("Your guess: ", end="")
+    control.save_pos()
+
+    guess = input()
+
+    while guess == 'r':
+        control.restore_pos()
+        control.clear_cursor()
+        sys.stdout.flush()
+
+        helpers.play_sample(sample, sleep=True)
+        guess = input()
 
     print()
     print("Your guess    : ", guess)
@@ -58,11 +72,21 @@ def play_round(mode):
     score = mode.score_sample(guess, sample)
     print()
 
+    print("Enter to play next round, r to hear again: ", end="")
+    control.save_pos()
+
+    stuff = input()
+
+    while stuff == "r":
+        control.restore_pos()
+        control.clear_cursor()
+        sys.stdout.flush()
+
+        helpers.play_sample(sample, sleep=True)
+        stuff = input()
+
     return score
 
-cursor_up = '\x1b[1A'
-cursor_down = '\x1b[1B'
-clear_line = "\u001b[2K"
 
 def main():
     intro()
@@ -76,7 +100,7 @@ def main():
     for x in range(14):
         print()
     for x in range(14):
-        print(cursor_up, end="")
+        control.cursor_up()
 
     score = 0
     for round_num in range(1, rounds+1):
@@ -86,11 +110,10 @@ def main():
         print(f"Score: {score_pct:0.0f}%")
         print()
         score += play_round(mode)
-        input("Hit enter to play next round")
 
         for x in range(14):
-            print(cursor_up, end="")
-            print(clear_line, end="")
+            control.cursor_up()
+            control.clear_line()
 
     score_pct = 100 * score / round_num
     print(f"Final Score: {score_pct:0.0f}%")
